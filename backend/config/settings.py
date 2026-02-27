@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,7 +23,7 @@ else:
 if "*" not in ALLOWED_HOSTS and _prod_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_prod_host)
 
-# CSRF Trusted Origins (Required for POST requests on HTTPS)
+# CSRF Trusted Origins (Crucial for POST/PUT requests over HTTPS)
 CSRF_TRUSTED_ORIGINS = [
     f"https://{_prod_host}",
     "http://localhost:5173",
@@ -32,31 +31,30 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # --- CORS CONFIGURATION ---
-_cors_env = os.environ.get("DJANGO_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_env.split(",") if o.strip()]
+# Temporarily allow all for testing; change back to CORS_ALLOWED_ORIGINS later
+CORS_ALLOW_ALL_ORIGINS = True 
+CORS_ALLOW_CREDENTIALS = True
 
-# Add production HTTPS URL to CORS allowed list
-_prod_url = f"https://{_prod_host}"
-if _prod_url not in CORS_ALLOWED_ORIGINS:
-    CORS_ALLOWED_ORIGINS.append(_prod_url)
-
-# Allow credentials (cookies/sessions) if needed
-CORS_ALLOW_CREDENTIALS = True 
-# --------------------------
+# Explicitly allow standard headers to pass preflight checks
+from corsheaders.defaults import default_headers
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "accept-encoding",
+]
+# ----------------------------------
 
 INSTALLED_APPS = [
+    'corsheaders',  # Keep this as high as possible
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'trips',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # MUST BE AT THE TOP
+    'corsheaders.middleware.CorsMiddleware',  # ABSOLUTE FIRST
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
