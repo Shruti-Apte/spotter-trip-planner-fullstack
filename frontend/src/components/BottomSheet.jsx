@@ -2,7 +2,8 @@ import { useState, useRef, useCallback, useEffect } from 'react';
 import StopsList from './StopsList';
 import LogsPanel from './LogsPanel';
 
-const SNAP_POINTS = [0.1, 0.55, 0.9];
+const SNAP_POINTS = [0.2, 0.55, 0.8];
+const COLLAPSED_MIN_PX = 150;
 
 function getNearestSnap(percent) {
   let nearest = SNAP_POINTS[0];
@@ -61,7 +62,7 @@ export default function BottomSheet({
 
   const handleMove = useCallback((clientY) => {
     const delta = startY.current - clientY;
-    const windowH = window.innerHeight;
+    const windowH = window.visualViewport?.height || window.innerHeight;
     const deltaPercent = delta / windowH;
     let next = startPercent.current + deltaPercent;
     next = Math.max(SNAP_POINTS[0], Math.min(SNAP_POINTS[2], next));
@@ -98,7 +99,9 @@ export default function BottomSheet({
     <div
       className="absolute left-0 right-0 bottom-0 z-20 bg-white dark:bg-gray-900 rounded-t-2xl shadow-[0_-4px_20px_rgba(0,0,0,0.08)] dark:shadow-[0_-4px_20px_rgba(0,0,0,0.3)] flex flex-col transition-shadow duration-200"
       style={{
-        height: `${heightPercent}%`,
+        height: `max(${COLLAPSED_MIN_PX}px, ${heightPercent}dvh)`,
+        maxHeight: 'calc(100dvh - env(safe-area-inset-top) - 8px)',
+        paddingBottom: 'max(8px, env(safe-area-inset-bottom))',
         transition: isDragging ? 'none' : 'height 0.25s ease-out',
       }}
     >

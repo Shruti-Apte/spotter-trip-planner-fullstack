@@ -204,7 +204,10 @@ export default function App() {
         </div>
       )}
       {route && mode === 'start' && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-[min(92%,720px)]">
+        <div
+          className="absolute left-1/2 -translate-x-1/2 z-30 w-[min(94%,720px)]"
+          style={{ top: 'max(8px, env(safe-area-inset-top))' }}
+        >
           <div className="rounded-2xl border border-white/40 bg-white/75 dark:bg-gray-900/75 backdrop-blur-lg shadow-[0_10px_30px_rgba(0,0,0,0.22)] p-3">
             <p className="text-[11px] uppercase tracking-[0.12em] font-semibold text-primary dark:text-primary-dark mb-1">
               Live command
@@ -236,7 +239,7 @@ export default function App() {
 
   if (isMobile) {
     return (
-      <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+      <div className="h-[100dvh] flex flex-col bg-gray-50 dark:bg-gray-950">
         <div className="flex-1 relative min-h-0">
           <div className="absolute inset-0">{mapArea}</div>
           {mode === 'plan' && (
