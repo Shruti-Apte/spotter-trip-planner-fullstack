@@ -262,3 +262,9 @@ class PlaceSuggestionsView(View):
             suggestions = []
 
         return JsonResponse({"suggestions": suggestions})
+
+
+def debug_mapbox_view(request):
+    """GET /api/debug/ - whether MAPBOX_ACCESS_TOKEN is set (no value exposed)."""
+    token = getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or ""
+    return JsonResponse({"mapbox_configured": bool(token)})
