@@ -29,6 +29,19 @@ def _parse_location_coords(value):
     return [float(value[0]), float(value[1])]
 
 
+def _resolve_mapbox_token(request, body=None):
+    """Prefer env token, then request-provided fallback for hosted deployments."""
+    env_token = (getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or "").strip()
+    if env_token:
+        return env_token
+    query_token = (request.GET.get("mapbox_token") or "").strip()
+    if query_token:
+        return query_token
+    if isinstance(body, dict):
+        return (body.get("mapbox_token") or "").strip()
+    return ""
+
+
 def _point_along_geometry(geometry, progress: float):
     """Return [lng, lat] for a fractional progress (0..1) along route geometry."""
     if not geometry:
@@ -221,7 +234,8 @@ class PlanTripView(View):
             dropoff_location_coords=dropoff_location_coords,
         )
 
-        route = get_route(trip_request)
+        token = _resolve_mapbox_token(request, body)
+        route = get_route(trip_request, token=token)
         if route is None:
             return JsonResponse(
                 {"error": "Could not find route. Check addresses and try again."},
@@ -252,7 +266,7 @@ class PlaceSuggestionsView(View):
         if len(query) < 2:
             return JsonResponse({"suggestions": []})
 
-        token = getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or ""
+        token = _resolve_mapbox_token(request)
         if not token:
             return JsonResponse({"suggestions": []})
 
@@ -265,6 +279,14 @@ class PlaceSuggestionsView(View):
 
 
 def debug_mapbox_view(request):
-    """GET /api/debug/ - whether MAPBOX_ACCESS_TOKEN is set (no value exposed)."""
-    token = getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or ""
-    return JsonResponse({"mapbox_configured": bool(token)})
+    """GET /api/debug/ - token wiring status (no token value exposed)."""
+    env_token = (getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or "").strip()
+    request_token = (request.GET.get("mapbox_token") or "").strip()
+    return JsonResponse(
+        {
+            "mapbox_configured": bool(env_token),
+            "mapbox_from_env": bool(env_token),
+            "mapbox_from_request": bool(request_token),
+            "mapbox_effective": bool(env_token or request_token),
+        }
+    )

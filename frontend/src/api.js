@@ -1,10 +1,12 @@
 const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const mapboxToken = (import.meta.env.VITE_MAPBOX_ACCESS_TOKEN || '').trim();
 
 export async function planTrip(payload) {
+  const requestPayload = mapboxToken ? { ...payload, mapbox_token: mapboxToken } : payload;
   const res = await fetch(`${baseUrl}/api/plan/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(requestPayload),
   });
   const data = await res.json();
   if (!res.ok) {
@@ -18,7 +20,8 @@ export async function planTrip(payload) {
 export async function fetchPlaceSuggestions(query) {
   const q = `${query || ''}`.trim();
   if (q.length < 2) return [];
-  const res = await fetch(`${baseUrl}/api/places/?q=${encodeURIComponent(q)}`);
+  const tokenQuery = mapboxToken ? `&mapbox_token=${encodeURIComponent(mapboxToken)}` : '';
+  const res = await fetch(`${baseUrl}/api/places/?q=${encodeURIComponent(q)}${tokenQuery}`);
   const data = await res.json();
   if (!res.ok) {
     const err = new Error(data.error || 'Failed to fetch suggestions');

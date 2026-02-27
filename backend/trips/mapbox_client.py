@@ -61,12 +61,12 @@ def _coords_to_str(coords: list) -> str:
     return ";".join(f"{c[0]},{c[1]}" for c in coords)
 
 
-def get_route(request: TripRequest):
+def get_route(request: TripRequest, token: str = ""):
     """
     Geocode current, pickup, dropoff; get driving directions; return Route.
     Returns None if geocoding or directions fail.
     """
-    token = getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or ""
+    token = (token or getattr(settings, "MAPBOX_ACCESS_TOKEN", "") or "").strip()
     if not token:
         return None
 
