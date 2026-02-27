@@ -11,28 +11,38 @@ load_dotenv(BASE_DIR / ".env")
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-dev-key-change-in-production")
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in ("1", "true", "yes")
 
-_allowed = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").strip()
+# --- HOSTS & DOMAINS ---
+_prod_host = "spotter-trip-planner-fullstack-production.up.railway.app"
 
+# Allowed Hosts
+_allowed = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").strip()
 if _allowed == "*":
     ALLOWED_HOSTS = ["*"]
 else:
     ALLOWED_HOSTS = [h.strip() for h in _allowed.split(",") if h.strip()]
 
-# Append Railway host only if a wildcard isn't already used
-_prod_host = "spotter-trip-planner-fullstack-production.up.railway.app"
 if "*" not in ALLOWED_HOSTS and _prod_host not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(_prod_host)
 
-# Trust the Railway domain for HTTPS (Fixes potential 403 Forbidden errors)
+# CSRF Trusted Origins (Required for POST requests on HTTPS)
 CSRF_TRUSTED_ORIGINS = [
     f"https://{_prod_host}",
     "http://localhost:5173",
     "http://127.0.0.1:5173"
 ]
-# --------------------------------------------------
 
-_cors_origins = os.environ.get("DJANGO_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
-CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_origins.split(",") if o.strip()]
+# --- CORS CONFIGURATION ---
+_cors_env = os.environ.get("DJANGO_CORS_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173")
+CORS_ALLOWED_ORIGINS = [o.strip() for o in _cors_env.split(",") if o.strip()]
+
+# Add production HTTPS URL to CORS allowed list
+_prod_url = f"https://{_prod_host}"
+if _prod_url not in CORS_ALLOWED_ORIGINS:
+    CORS_ALLOWED_ORIGINS.append(_prod_url)
+
+# Allow credentials (cookies/sessions) if needed
+CORS_ALLOW_CREDENTIALS = True 
+# --------------------------
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -46,7 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # MUST BE AT THE TOP
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
