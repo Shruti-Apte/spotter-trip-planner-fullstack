@@ -246,11 +246,9 @@ npm run build
 
 ## Screenshots
 
-```markdown
 ### Desktop layout
 ![Desktop layout](frontend/public/assets/desktop-view.png)
 
 ### Mobile view
 ![Mobile view](frontend/public/assets/mobile-view.png)
 
-```
