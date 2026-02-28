@@ -3,8 +3,7 @@
 Live app: https://spotter-trip-planner-fullstack.netlify.app  
 API: https://spotter-trip-planner-fullstack-production.up.railway.app  
 
-Spotter Trip Planner is a full‑stack web application for planning truck trips under FMCSA Hours of Service (HOS) rules.  
-Given current location, pickup, dropoff, and current cycle hours used, the system:
+Spotter Trip Planner is a full‑stack web application for planning truck trips under FMCSA Hours of Service (HOS) rules.Given current location, pickup, dropoff, and current cycle hours used, sthe system:
 
 - computes a route (current → pickup → dropoff),
 - plans fuel, rest, and sleeper stops,
@@ -247,23 +246,11 @@ npm run build
 
 ## Screenshots
 
-Screenshots and GIFs are served from `frontend/public/assets/` so they are available both in the README and in the deployed frontend.
-
-```text
-frontend/public/assets/
-  ├─ spotter-desktop.png         # Desktop layout: form + map + logs
-  ├─ spotter-mobile-map.png      # Mobile layout: map with swipe-up panel
-  ├─ spotter-log-sheet.png       # Example daily log sheet
-  └─ spotter-flow.gif            # Short trip-planning interaction
-```
-
-Inline references used in this README:
-
 ```markdown
 ### Desktop layout
-![Desktop layout](frontend/public/assets/desktop-view.jpeg)
+![Desktop layout](frontend/public/assets/desktop-view.png)
 
 ### Mobile view
-![Mobile view](frontend/public/assets/mobile-view.jpeg)
+![Mobile view](frontend/public/assets/mobile-view.png)
 
 ```
