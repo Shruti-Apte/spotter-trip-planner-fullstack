@@ -250,5 +250,5 @@ npm run build
 ![Desktop layout](frontend/public/assets/desktop-view.png)
 
 ### Mobile view
-![Mobile view](frontend/public/assets/mobile-view.png)
+<img src="frontend/public/assets/mobile-view.png" width="300" />
 
