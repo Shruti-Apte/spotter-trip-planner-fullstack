@@ -1,7 +1,7 @@
-# Spotter Trip Planner (React + Django)
+# Truck Route Planner (React + Django)
 
-Live app: https://spotter-trip-planner-fullstack.netlify.app  
-API: https://spotter-trip-planner-fullstack-production.up.railway.app  
+Live app: https://truck-route-planner.netlify.app/
+API: https://truck-route-planner-production.up.railway.app/ 
 
 Full-stack trip planning system that generates FMCSA Hours-of-Service compliant routes, fuel/rest stops, and DOT-style daily log sheets.
 

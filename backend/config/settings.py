@@ -11,7 +11,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "django-insecure-dev-key-change
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() in ("1", "true", "yes")
 
 # --- HOSTS & DOMAINS ---
-_prod_host = "spotter-trip-planner-fullstack-production.up.railway.app"
+_prod_host = "truck-route-planner-production.up.railway.app"
 
 # Allowed Hosts
 _allowed = os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").strip()
